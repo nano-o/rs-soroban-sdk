@@ -308,10 +308,10 @@ impl IntoVal<Env, BigInt> for i32 {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 use super::xdr::ScVal;
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<&BigInt> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &BigInt) -> Result<Self, Self::Error> {
@@ -319,7 +319,7 @@ impl TryFrom<&BigInt> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<BigInt> for ScVal {
     type Error = ConversionError;
     fn try_from(v: BigInt) -> Result<Self, Self::Error> {
@@ -327,7 +327,7 @@ impl TryFrom<BigInt> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFromVal<Env, ScVal> for BigInt {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
@@ -338,7 +338,7 @@ impl TryFromVal<Env, ScVal> for BigInt {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryIntoVal<Env, BigInt> for ScVal {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<BigInt, Self::Error> {

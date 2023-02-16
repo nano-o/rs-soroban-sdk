@@ -5,7 +5,7 @@
 pub use super::env::xdr::HostFunction;
 
 // XDR generic types and traits.
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 pub use super::env::xdr::ReadXdrIter;
 pub use super::env::xdr::{Error, ReadXdr, Validate, VecM, WriteXdr};
 

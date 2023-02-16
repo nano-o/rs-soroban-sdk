@@ -82,7 +82,7 @@ impl Debug for AccountId {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         #[cfg(target_family = "wasm")]
         write!(f, "AccountId(..)")?;
-        #[cfg(not(target_family = "wasm"))]
+        #[cfg(not(any(target_family = "wasm", feature = "verification")))]
         {
             use stellar_strkey::StrkeyPublicKeyEd25519;
             let account_id: xdr::AccountId = self.try_into().map_err(|_| core::fmt::Error)?;
@@ -175,10 +175,10 @@ impl IntoVal<Env, RawVal> for &AccountId {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 use super::xdr::ScVal;
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<&AccountId> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &AccountId) -> Result<Self, Self::Error> {
@@ -186,7 +186,7 @@ impl TryFrom<&AccountId> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<&AccountId> for super::xdr::AccountId {
     type Error = ConversionError;
     fn try_from(v: &AccountId) -> Result<Self, Self::Error> {
@@ -195,7 +195,7 @@ impl TryFrom<&AccountId> for super::xdr::AccountId {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<AccountId> for ScVal {
     type Error = ConversionError;
     fn try_from(v: AccountId) -> Result<Self, Self::Error> {
@@ -203,7 +203,7 @@ impl TryFrom<AccountId> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFromVal<Env, ScVal> for AccountId {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
@@ -214,7 +214,7 @@ impl TryFromVal<Env, ScVal> for AccountId {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFromVal<Env, super::xdr::AccountId> for AccountId {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: super::xdr::AccountId) -> Result<Self, Self::Error> {
@@ -223,7 +223,7 @@ impl TryFromVal<Env, super::xdr::AccountId> for AccountId {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryIntoVal<Env, AccountId> for ScVal {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {
@@ -231,7 +231,7 @@ impl TryIntoVal<Env, AccountId> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryIntoVal<Env, AccountId> for super::xdr::AccountId {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<AccountId, Self::Error> {

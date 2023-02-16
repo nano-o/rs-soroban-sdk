@@ -306,10 +306,10 @@ where
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 use super::xdr::{ScObject, ScVal, ScVec};
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFrom<&Vec<T>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
@@ -317,7 +317,7 @@ impl<T> TryFrom<&Vec<T>> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFrom<&Vec<T>> for ScObject {
     type Error = ConversionError;
     fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
@@ -330,7 +330,7 @@ impl<T> TryFrom<&Vec<T>> for ScObject {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFrom<&Vec<T>> for ScVec {
     type Error = ConversionError;
     fn try_from(v: &Vec<T>) -> Result<Self, Self::Error> {
@@ -343,7 +343,7 @@ impl<T> TryFrom<&Vec<T>> for ScVec {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFrom<Vec<T>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
@@ -351,7 +351,7 @@ impl<T> TryFrom<Vec<T>> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFrom<Vec<T>> for ScObject {
     type Error = ConversionError;
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
@@ -359,7 +359,7 @@ impl<T> TryFrom<Vec<T>> for ScObject {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFrom<Vec<T>> for ScVec {
     type Error = ConversionError;
     fn try_from(v: Vec<T>) -> Result<Self, Self::Error> {
@@ -367,7 +367,7 @@ impl<T> TryFrom<Vec<T>> for ScVec {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFromVal<Env, ScVal> for Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -381,7 +381,7 @@ where
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFromVal<Env, ScObject> for Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -392,7 +392,7 @@ where
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryFromVal<Env, ScVec> for Vec<T>
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -403,7 +403,7 @@ where
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryIntoVal<Env, Vec<T>> for ScVal
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -414,7 +414,7 @@ where
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryIntoVal<Env, Vec<T>> for ScObject
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -425,7 +425,7 @@ where
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<T> TryIntoVal<Env, Vec<T>> for ScVec
 where
     T: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -1125,7 +1125,7 @@ mod test {
         assert_eq!(vec.binary_search(5), Ok(3));
     }
 
-    #[cfg(not(target_family = "wasm"))]
+    #[cfg(not(any(target_family = "wasm", feature = "verification")))]
     #[test]
     fn test_scval_accessibility_from_udt_types() {
         use crate::TryFromVal;

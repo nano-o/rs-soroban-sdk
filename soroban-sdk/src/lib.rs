@@ -42,7 +42,7 @@
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 extern crate std;
 
 #[cfg(all(target_family = "wasm", feature = "testutils"))]

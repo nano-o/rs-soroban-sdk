@@ -9,7 +9,7 @@ use super::{
     ConversionError, Env, EnvVal, IntoVal, Object, RawVal, Status, TryFromVal, TryIntoVal, Vec,
 };
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 use super::xdr::ScVal;
 
 #[cfg(doc)]
@@ -252,7 +252,7 @@ where
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<K, V> TryFrom<&Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Map<K, V>) -> Result<Self, Self::Error> {
@@ -260,7 +260,7 @@ impl<K, V> TryFrom<&Map<K, V>> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<K, V> TryFrom<Map<K, V>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Map<K, V>) -> Result<Self, Self::Error> {
@@ -268,7 +268,7 @@ impl<K, V> TryFrom<Map<K, V>> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<K, V> TryFromVal<Env, ScVal> for Map<K, V>
 where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,
@@ -283,7 +283,7 @@ where
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<K, V> TryIntoVal<Env, Map<K, V>> for ScVal
 where
     K: IntoVal<Env, RawVal> + TryFromVal<Env, RawVal>,

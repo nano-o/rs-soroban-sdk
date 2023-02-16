@@ -17,7 +17,7 @@ use crate::unwrap::UnwrapOptimized;
 #[cfg(doc)]
 use crate::{data::Data, Map, Vec};
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 use super::xdr::ScVal;
 
 /// Create a [Bytes] with an array, or an integer or hex literal.
@@ -261,7 +261,7 @@ impl From<&Bytes> for Bytes {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<&Bytes> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Bytes) -> Result<Self, Self::Error> {
@@ -269,7 +269,7 @@ impl TryFrom<&Bytes> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<Bytes> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Bytes) -> Result<Self, Self::Error> {
@@ -277,7 +277,7 @@ impl TryFrom<Bytes> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFromVal<Env, ScVal> for Bytes {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
@@ -288,7 +288,7 @@ impl TryFromVal<Env, ScVal> for Bytes {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryIntoVal<Env, Bytes> for ScVal {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<Bytes, Self::Error> {
@@ -922,7 +922,7 @@ impl<const N: usize> From<&BytesN<N>> for Bytes {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &BytesN<N>) -> Result<Self, Self::Error> {
@@ -930,7 +930,7 @@ impl<const N: usize> TryFrom<&BytesN<N>> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_from(v: BytesN<N>) -> Result<Self, Self::Error> {
@@ -938,7 +938,7 @@ impl<const N: usize> TryFrom<BytesN<N>> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<const N: usize> TryFromVal<Env, ScVal> for BytesN<N> {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: ScVal) -> Result<Self, Self::Error> {
@@ -949,7 +949,7 @@ impl<const N: usize> TryFromVal<Env, ScVal> for BytesN<N> {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl<const N: usize> TryIntoVal<Env, BytesN<N>> for ScVal {
     type Error = ConversionError;
     fn try_into_val(self, env: &Env) -> Result<BytesN<N>, Self::Error> {
