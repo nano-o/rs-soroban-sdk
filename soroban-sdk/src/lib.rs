@@ -38,7 +38,7 @@
 //!
 //! More examples are available at <https://soroban.stellar.org/docs/category/examples>.
 
-#![cfg_attr(target_family = "wasm", no_std)]
+#![cfg_attr(any(target_family = "wasm", feature = "verification"), no_std)]
 #![cfg_attr(feature = "docs", feature(doc_cfg))]
 #![allow(dead_code)]
 

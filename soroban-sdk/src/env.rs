@@ -1,5 +1,5 @@
 use core::convert::TryInto;
-use soroban_env_common::UnimplementedEnv;
+use soroban_env_common::NoStdEnv;
 
 #[cfg(target_family = "wasm")]
 pub mod internal {
@@ -26,8 +26,8 @@ pub mod internal {
 
 #[cfg(feature = "verification")]
 pub mod internal {
-    pub use soroban_env_host::*;
-    pub type EnvImpl = UnimplementedEnv;
+    pub type EnvImpl = NoStdEnv;
+    pub use soroban_env_common::*;
 }
 
 // Testutils from the environmen are pub here, and then pub re-exported out of
@@ -91,7 +91,7 @@ impl Default for Env {
     #[cfg(all(not(feature = "testutils"), feature = "verification"))]
     fn default() -> Self {
         Self {
-            env_impl: UnimplementedEnv::default()
+            env_impl: NoStdEnv::default()
         }
     }
 }
