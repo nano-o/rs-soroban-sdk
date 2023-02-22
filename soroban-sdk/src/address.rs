@@ -6,7 +6,7 @@ use super::{
     ConversionError, Env, Object, RawVal, TryFromVal,
 };
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 use crate::env::internal::xdr::ScVal;
 use crate::{unwrap::UnwrapInfallible, Vec};
 
@@ -36,7 +36,7 @@ impl Debug for Address {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         #[cfg(target_family = "wasm")]
         write!(f, "Address(..)")?;
-        #[cfg(not(target_family = "wasm"))]
+        #[cfg(not(any(target_family = "wasm", feature = "verification")))]
         {
             use crate::env::internal::xdr;
             use stellar_strkey::{ed25519, Contract, Strkey};
@@ -124,7 +124,7 @@ impl TryFromVal<Env, &Address> for RawVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<&Address> for ScVal {
     type Error = ConversionError;
     fn try_from(v: &Address) -> Result<Self, Self::Error> {
@@ -132,7 +132,7 @@ impl TryFrom<&Address> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFrom<Address> for ScVal {
     type Error = ConversionError;
     fn try_from(v: Address) -> Result<Self, Self::Error> {
@@ -140,7 +140,7 @@ impl TryFrom<Address> for ScVal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 impl TryFromVal<Env, ScVal> for Address {
     type Error = ConversionError;
     fn try_from_val(env: &Env, val: &ScVal) -> Result<Self, Self::Error> {

@@ -1,4 +1,17 @@
 use core::convert::Infallible;
+use soroban_env_common::NoStdEnv;
+
+#[cfg(feature = "verification")]
+pub mod internal {
+    pub use soroban_env_common::*;
+    pub type EnvImpl = NoStdEnv;
+    use core::convert::Infallible;
+    // TODO: not sure the following is adequate
+    pub(crate) fn reject_err<T>(_env: &NoStdEnv, r: Result<T, Infallible>) -> Result<T, Infallible> {
+        r
+    }
+}
+
 
 #[cfg(target_family = "wasm")]
 pub mod internal {
@@ -15,7 +28,7 @@ pub mod internal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 pub mod internal {
     use core::convert::Infallible;
 
@@ -146,16 +159,23 @@ pub struct Env {
 }
 
 impl Default for Env {
-    #[cfg(not(any(test, feature = "testutils")))]
+    #[cfg(all(not(feature = "verification"),not(any(test, feature = "testutils"))))]
     fn default() -> Self {
         Self {
             env_impl: Default::default(),
         }
     }
 
-    #[cfg(any(test, feature = "testutils"))]
+    #[cfg(all(not(feature = "verification"), any(test, feature = "testutils")))]
     fn default() -> Self {
         Self::default_with_testutils()
+    }
+
+    #[cfg(all(not(feature = "testutils"), feature = "verification"))]
+    fn default() -> Self {
+        Self {
+            env_impl: NoStdEnv::default()
+        }
     }
 }
 

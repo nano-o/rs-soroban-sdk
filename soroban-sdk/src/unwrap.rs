@@ -15,8 +15,11 @@ impl<T> UnwrapOptimized for Option<T> {
             Some(t) => t,
             None => core::arch::wasm32::unreachable(),
         }
-        #[cfg(not(target_family = "wasm"))]
-        self.unwrap()
+        #[cfg(not(any(target_family = "wasm", feature = "verification")))]
+        self.unwrap();
+        // TODO: not sure the following is adequate
+        #[cfg(feature = "verification")]
+        core::unimplemented!();
     }
 }
 
@@ -30,8 +33,11 @@ impl<T, E: core::fmt::Debug> UnwrapOptimized for Result<T, E> {
             Ok(t) => t,
             Err(_) => core::arch::wasm32::unreachable(),
         }
-        #[cfg(not(target_family = "wasm"))]
-        self.unwrap()
+        #[cfg(not(any(target_family = "wasm", feature = "verification")))]
+        self.unwrap();
+        // TODO: not sure the following is adequate
+        #[cfg(feature = "verification")]
+        core::unimplemented!();
     }
 }
 
