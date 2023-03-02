@@ -15,7 +15,22 @@ pub mod internal {
     }
 }
 
-#[cfg(not(target_family = "wasm"))]
+#[cfg(feature = "verification")]
+pub mod internal {
+    use core::convert::Infallible;
+
+    pub use soroban_env_verification::*;
+    pub type EnvImpl = NoStdEnv;
+
+    // In the Guest case, Env::Error is already Infallible so there is no work
+    // to do to "reject an error": if an error occurs in the environment, the
+    // host will trap our VM and we'll never get here at all.
+    pub(crate) fn reject_err<T>(_env: &NoStdEnv, r: Result<T, Infallible>) -> Result<T, Infallible> {
+        r
+    }
+}
+
+#[cfg(not(any(target_family = "wasm", feature = "verification")))]
 pub mod internal {
     use core::convert::Infallible;
 
@@ -143,6 +158,13 @@ pub struct Env {
     env_impl: internal::EnvImpl,
     #[cfg(any(test, feature = "testutils"))]
     snapshot: Option<Rc<LedgerSnapshot>>,
+}
+
+#[cfg(feature = "verification")]
+impl Env {
+    pub fn test() {
+        internal::EnvImpl::test();
+    }
 }
 
 impl Default for Env {

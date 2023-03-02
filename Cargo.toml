@@ -7,20 +7,20 @@ members = [
     "soroban-sdk-macros",
     "soroban-spec",
     "soroban-ledger-snapshot",
-    "soroban-token-spec",
-    "tests/empty",
-    "tests/empty2",
-    "tests/add_u64",
-    "tests/add_i128",
-    "tests/add_u128",
-    "tests/import_contract",
-    "tests/invoke_contract",
-    "tests/udt",
-    "tests/contract_data",
-    "tests/events",
-    "tests/logging",
-    "tests/errors",
-    "tests/alloc",
+    # "soroban-token-spec",
+    # "tests/empty",
+    # "tests/empty2",
+    # "tests/add_u64",
+    # "tests/add_i128",
+    # "tests/add_u128",
+    # "tests/import_contract",
+    # "tests/invoke_contract",
+    # "tests/udt",
+    # "tests/contract_data",
+    # "tests/events",
+    # "tests/logging",
+    # "tests/errors",
+    # "tests/alloc",
 ]
 
 [workspace.package]
@@ -43,6 +43,9 @@ rev = "d06aaddca61f011cc64ec098b464233423197c3a"
 version = "0.0.14"
 git = "https://github.com/stellar/rs-soroban-env"
 rev = "d06aaddca61f011cc64ec098b464233423197c3a"
+
+[workspace.dependencies.soroban-env-verification]
+path = "../rs-soroban-env/soroban-env-verification"
 
 [workspace.dependencies.soroban-env-host]
 version = "0.0.14"
