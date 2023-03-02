@@ -1,9 +1,8 @@
 use core::convert::Infallible;
-use soroban_env_common::NoStdEnv;
 
 #[cfg(feature = "verification")]
 pub mod internal {
-    pub use soroban_env_common::*;
+    pub use soroban_env_verification::*;
     pub type EnvImpl = NoStdEnv;
     use core::convert::Infallible;
     // TODO: not sure the following is adequate
@@ -11,7 +10,6 @@ pub mod internal {
         r
     }
 }
-
 
 #[cfg(target_family = "wasm")]
 pub mod internal {
@@ -174,7 +172,7 @@ impl Default for Env {
     #[cfg(all(not(feature = "testutils"), feature = "verification"))]
     fn default() -> Self {
         Self {
-            env_impl: NoStdEnv::default()
+            env_impl: internal::EnvImpl::default()
         }
     }
 }

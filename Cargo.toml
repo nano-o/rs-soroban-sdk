@@ -50,6 +50,9 @@ version = "0.0.14"
 git = "https://github.com/stellar/rs-soroban-env"
 rev = "d06aaddca61f011cc64ec098b464233423197c3a"
 
+[workspace.dependencies.soroban-env-verification]
+path = "../rs-soroban-env/soroban-env-verification/"
+
 [workspace.dependencies.stellar-strkey]
 version = "0.0.7"
 git = "https://github.com/stellar/rs-stellar-strkey"

@@ -21,22 +21,21 @@ bytes-lit = "0.0.4"
 soroban-env-guest = { workspace = true }
 
 [target.'cfg(not(target_family="wasm"))'.dependencies]
-soroban-env-common = { workspace = true }
+soroban-env-verification = { workspace = true }
 
-[dev-dependencies]
-soroban-env-common = { workspace = true }
-soroban-env-host = { workspace = true, features = [] }
-stellar-xdr = { workspace = true, features = ["next", "std"] }
-soroban-spec = { workspace = true }
-ed25519-dalek = "1.0.1"
-rand = "0.8.5"
-hex = "0.4.3"
+# [dev-dependencies]
+# soroban-env-common = { workspace = true }
+# soroban-env-host = { workspace = true, features = [] }
+# stellar-xdr = { workspace = true, features = ["next", "std"] }
+# soroban-spec = { workspace = true }
+# ed25519-dalek = "1.0.1"
+# rand = "0.8.5"
+# hex = "0.4.3"
 
 [features]
 default = ["verification"]
 alloc = []
 # testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek"]
-testutils = []
 docs = []
 verification = []
 
