@@ -1,10 +1,11 @@
-#![cfg(any(test, feature = "testutils"))]
+#![cfg(any(test, feature = "testutils", feature = "verification"))]
 #![cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 
 //! Utilities intended for use when testing.
 
 mod sign;
 
+#[cfg(not(feature = "verification"))]
 pub use sign::ed25519;
 
 use crate::{Env, RawVal, Symbol, Vec};
@@ -15,9 +16,11 @@ pub trait ContractFunctionSet {
 }
 
 #[doc(inline)]
+#[cfg(not(feature = "verification"))]
 pub use crate::env::internal::LedgerInfo;
 
 /// Test utilities for [`Ledger`][crate::ledger::Ledger].
+#[cfg(not(feature = "verification"))]
 pub trait Ledger {
     /// Set ledger info.
     fn set(&self, l: LedgerInfo);
@@ -31,6 +34,7 @@ pub trait Ledger {
         F: FnMut(&mut LedgerInfo);
 }
 
+#[cfg(not(feature = "verification"))]
 pub mod budget {
     use core::fmt::Display;
 
@@ -122,6 +126,7 @@ pub mod budget {
 }
 
 /// Test utilities for [`Events`][crate::events::Events].
+#[cfg(not(feature = "verification"))]
 pub trait Events {
     /// Returns all events that have been published by contracts.
     ///
@@ -133,6 +138,7 @@ pub trait Events {
 }
 
 /// Test utilities for [`Logger`][crate::logging::Logger].
+#[cfg(not(feature = "verification"))]
 pub trait Logger {
     /// Returns all debug events that have been logged.
     fn all(&self) -> std::vec::Vec<String>;
@@ -151,6 +157,7 @@ pub trait BytesN<const N: usize> {
 /// Generates an array of N random bytes.
 ///
 /// The value returned is not cryptographically secure.
+#[cfg(not(feature = "verification"))]
 pub(crate) fn random<const N: usize>() -> [u8; N] {
     use rand::RngCore;
     let mut arr = [0u8; N];

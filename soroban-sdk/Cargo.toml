@@ -35,9 +35,6 @@ soroban-env-verification = { workspace = true }
 [features]
 default = ["verification"]
 alloc = []
-# testutils = ["soroban-env-host/testutils", "dep:ed25519-dalek"]
+testutils = []
 docs = []
 verification = []
-
-[package.metadata.docs.rs]
-all-features = true

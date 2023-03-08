@@ -1,12 +1,14 @@
 use core::convert::Infallible;
+extern crate alloc;
+use alloc::rc::Rc;
 
 #[cfg(feature = "verification")]
 pub mod internal {
     pub use soroban_env_verification::*;
-    pub type EnvImpl = NoStdEnv;
+    pub type EnvImpl = Host;
     use core::convert::Infallible;
     // TODO: not sure the following is adequate
-    pub(crate) fn reject_err<T>(_env: &NoStdEnv, r: Result<T, Infallible>) -> Result<T, Infallible> {
+    pub(crate) fn reject_err<T>(_env: &Host, r: Result<T, Infallible>) -> Result<T, Infallible> {
         r
     }
 }
@@ -367,19 +369,22 @@ impl Env {
 
 #[cfg(any(test, feature = "testutils"))]
 use crate::testutils::{budget::Budget, random, BytesN as _, ContractFunctionSet, Ledger as _};
+#[cfg(feature = "verification")]
+use crate::testutils::ContractFunctionSet;
 #[cfg(any(test, feature = "testutils"))]
 use soroban_ledger_snapshot::LedgerSnapshot;
 #[cfg(any(test, feature = "testutils"))]
 use std::{path::Path, rc::Rc};
 #[cfg(any(test, feature = "testutils"))]
 use xdr::{Hash, LedgerEntry, LedgerKey, LedgerKeyContractData};
-#[cfg(any(test, feature = "testutils"))]
+#[cfg(any(test, feature = "testutils", feature = "verification"))]
 #[cfg_attr(feature = "docs", doc(cfg(feature = "testutils")))]
 impl Env {
     pub(crate) fn host(&self) -> &internal::Host {
         &self.env_impl
     }
 
+    #[cfg(not(feature = "verification"))]
     fn default_with_testutils() -> Env {
         struct EmptySnapshotSource();
 
@@ -454,7 +459,6 @@ impl Env {
     /// ```
     pub fn register_contract<'a, T: ContractFunctionSet + 'static>(
         &self,
-        contract_id: impl Into<Option<&'a BytesN<32>>>,
         contract: T,
     ) -> BytesN<32> {
         struct InternalContractFunctionSet<T: ContractFunctionSet>(pub(crate) T);
@@ -469,18 +473,18 @@ impl Env {
             }
         }
 
-        let contract_id = if let Some(contract_id) = contract_id.into() {
-            contract_id.clone()
-        } else {
-            BytesN::random(self)
-        };
-        self.env_impl
-            .register_test_contract(
-                contract_id.to_object(),
+        // let contract_id = if let Some(contract_id) = contract_id.into() {
+            // contract_id.clone()
+        // } else {
+            // panic!();
+        // };
+        let id:Object = self.env_impl
+            .register_contract(
                 Rc::new(InternalContractFunctionSet(contract)),
             )
             .unwrap();
-        contract_id
+        TryFromVal::<Env, Object>::try_from_val(&self, &id)
+        .unwrap()
     }
 
     /// Register a contract in a WASM file with the [Env] for testing.
@@ -507,6 +511,7 @@ impl Env {
     ///     env.register_contract_wasm(None, WASM);
     /// }
     /// ```
+    #[cfg(not(feature = "verification"))]
     pub fn register_contract_wasm<'a>(
         &self,
         contract_id: impl Into<Option<&'a BytesN<32>>>,
@@ -526,6 +531,7 @@ impl Env {
     /// The contract will wrap a randomly-generated Stellar asset. This function
     /// is useful for using in the tests when an arbitrary token contract
     /// instance is needed.
+    #[cfg(not(feature = "verification"))]
     pub fn register_stellar_asset_contract(&self, admin: Address) -> BytesN<32> {
         let issuer_id =
             xdr::AccountId(xdr::PublicKey::PublicKeyTypeEd25519(xdr::Uint256(random())));
@@ -597,6 +603,7 @@ impl Env {
         token_id
     }
 
+    #[cfg(not(feature = "verification"))]
     fn register_contract_with_optional_contract_id_and_source<'a>(
         &self,
         contract_id: impl Into<Option<&'a BytesN<32>>>,
@@ -610,6 +617,7 @@ impl Env {
         }
     }
 
+    #[cfg(not(feature = "verification"))]
     fn register_contract_with_source(&self, source: xdr::ScContractCode) -> BytesN<32> {
         let prev_source_account = if let Ok(prev_acc) = self.env_impl.source_account() {
             Some(prev_acc)
@@ -719,6 +727,7 @@ impl Env {
     /// # #[cfg(not(feature = "testutils"))]
     /// # fn main() { }
     /// ```
+    #[cfg(not(feature = "verification"))]
     pub fn recorded_top_authorizations(
         &self,
     ) -> std::vec::Vec<(Address, BytesN<32>, Symbol, Vec<RawVal>)> {
@@ -751,6 +760,7 @@ impl Env {
             .collect()
     }
 
+    #[cfg(not(feature = "verification"))]
     fn register_contract_with_contract_id_and_source(
         &self,
         contract_id: &BytesN<32>,
@@ -804,6 +814,7 @@ impl Env {
     ///     env.install_contract_wasm(WASM);
     /// }
     /// ```
+    #[cfg(not(feature = "verification"))]
     pub fn install_contract_wasm(&self, contract_wasm: &[u8]) -> BytesN<32> {
         self.env_impl
             .invoke_function(xdr::HostFunction::InstallContractCode(
@@ -820,6 +831,7 @@ impl Env {
     ///
     /// Used to write or read contract data, or take other actions in tests for
     /// setting up tests or asserting on internal state.
+    #[cfg(not(feature = "verification"))]
     pub fn as_contract<T>(&self, id: &BytesN<32>, f: impl FnOnce() -> T) -> T {
         let id: [u8; 32] = id.into();
         let func = Symbol::from_str("");
@@ -836,6 +848,7 @@ impl Env {
     /// Creates a new Env loaded with the [`LedgerSnapshot`].
     ///
     /// The ledger info and state in the snapshot are loaded into the Env.
+    #[cfg(not(feature = "verification"))]
     pub fn from_snapshot(s: LedgerSnapshot) -> Env {
         let info = s.ledger_info();
 
@@ -858,11 +871,13 @@ impl Env {
     /// ### Panics
     ///
     /// If there is any error reading the file.
+    #[cfg(not(feature = "verification"))]
     pub fn from_snapshot_file(p: impl AsRef<Path>) -> Env {
         Self::from_snapshot(LedgerSnapshot::read_file(p).unwrap())
     }
 
     /// Create a snapshot from the Env's current state.
+    #[cfg(not(feature = "verification"))]
     pub fn to_snapshot(&self) -> LedgerSnapshot {
         let snapshot = self.snapshot.clone().unwrap_or_default();
         let mut snapshot = (*snapshot).clone();
@@ -881,11 +896,13 @@ impl Env {
     /// ### Panics
     ///
     /// If there is any error writing the file.
+    #[cfg(not(feature = "verification"))]
     pub fn to_snapshot_file(&self, p: impl AsRef<Path>) {
         self.to_snapshot().write_file(p).unwrap();
     }
 
     /// Get the budget that tracks the resources consumed for the environment.
+    #[cfg(not(feature = "verification"))]
     pub fn budget(&self) -> Budget {
         self.env_impl.with_budget(|b| Budget::new(b))
     }

@@ -35,9 +35,9 @@ impl<T, E: core::fmt::Debug> UnwrapOptimized for Result<T, E> {
         }
         #[cfg(not(any(target_family = "wasm", feature = "verification")))]
         self.unwrap();
-        // TODO: not sure the following is adequate
         #[cfg(feature = "verification")]
-        core::unimplemented!();
+        // TODO: is that okay?
+        self.unwrap()
     }
 }
 

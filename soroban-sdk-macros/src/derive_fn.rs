@@ -249,7 +249,7 @@ pub fn derive_contract_function_set<'a>(
         })
         .multiunzip();
     quote! {
-        #[cfg(any(test, feature = "testutils"))]
+        #[cfg(any(test, feature = "testutils", feature = "verification"))]
         impl soroban_sdk::testutils::ContractFunctionSet for #ty {
             fn call(
                 &self,
